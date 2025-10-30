@@ -42,7 +42,7 @@ public class SecurityConfig {
 		http
 			.csrf(csrf -> csrf.disable()) //csrf 비활성화 
 			.authorizeHttpRequests(auth -> auth
-					.requestMatchers("/api/auth/**").permitAll() //인증 없이 접근 가능한 요청들
+					.requestMatchers("/", "/index", "/home", "/api/auth/**").permitAll() //인증 없이 접근 가능한 요청들
 					.anyRequest().authenticated() //위 요청을 제외한 나머지 요청들은 전부 인증 필요
 					)
 					//로그인 처리 파트 설정
