@@ -61,7 +61,7 @@ public class SecurityConfig {
 						CorsConfiguration config = new CorsConfiguration();
 						config.setAllowCredentials(true);
 						config.setAllowedOrigins(List.of(
-						"http://localhost:3000","http://cloudfront-s3-bucket-jhj.s3-website.ap-northeast-2.amazonaws.com"			
+						"http://43.203.95.217","http://cloudfront-s3-bucket-jhj.s3-website.ap-northeast-2.amazonaws.com"			
 								)); //허용 ip주소
 						config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
 						config.setAllowedHeaders(List.of("*"));
