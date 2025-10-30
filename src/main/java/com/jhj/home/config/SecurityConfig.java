@@ -18,14 +18,10 @@ import com.jhj.home.repository.UserRepository;
 @Configuration
 public class SecurityConfig {
 
-    private final PasswordEncoder passwordEncoder;
+
 	
 	@Autowired
 	private UserRepository userRepository;
-
-    SecurityConfig(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -42,32 +38,35 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(csrf -> csrf.disable())
+			.csrf(csrf -> csrf.disable()) //csrf 비활성화 
 			.authorizeHttpRequests(auth -> auth
-					.requestMatchers("").permitAll()
-					.anyRequest().authenticated()
+					.requestMatchers("/api/auth/**").permitAll() //인증 없이 접근 가능한 요청들
+					.anyRequest().authenticated() //위 요청을 제외한 나머지 요청들은 전부 인증 필요
 					)
-				.formLogin(form -> form
-						.loginProcessingUrl("/api/auth/login")
-						.defaultSuccessUrl("/api/auth/apicheck", true)
-						.permitAll()
-						)
-				.logout(logout -> logout
-						.logoutUrl("/api/auth/logout")
-                        .permitAll()
-                        )
-				.cors(cors -> cors.configurationSource(requset -> {
-					CorsConfiguration config = new CorsConfiguration();
-					config.setAllowCredentials(true);
-					config.setAllowedOrigins(List.of("http://localhost:3000","http://cloudfront-s3-bucket-jhj.s3-website.ap-northeast-2.amazonaws.com"));
-					config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
-					config.setAllowedHeaders(List.of("*"));
-					return config;
-					}
-						 ));
-		
+					//로그인 처리 파트 설정
+					.formLogin(form -> form
+							.loginProcessingUrl("/api/auth/login") //로그인을 처리하는 요청
+							.defaultSuccessUrl("/api/auth/apicheck", true) //로그인 성공 시 이동할 url
+							.permitAll()
+							)
+					//로그아웃 처리 파트 설정
+					.logout(logout -> logout
+							.logoutUrl("/api/auth/logout")
+							.permitAll()							
+							)
+					.cors(cors -> cors.configurationSource(request -> {
+						CorsConfiguration config = new CorsConfiguration();
+						config.setAllowCredentials(true);
+						config.setAllowedOrigins(List.of(
+						"http://localhost:3000","http://cloudfront-s3-bucket-jhj.s3-website.ap-northeast-2.amazonaws.com"			
+								)); //허용 ip주소
+						config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
+						config.setAllowedHeaders(List.of("*"));
+						return config;
+					}));
+					
 		return http.build();
+			
 	}
-	
 
 }
