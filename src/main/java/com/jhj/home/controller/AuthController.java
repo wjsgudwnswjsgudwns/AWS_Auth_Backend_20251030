@@ -1,6 +1,10 @@
 package com.jhj.home.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +35,15 @@ public class AuthController {
 	public String apicheck() {
 		
 		return "로그인 확인";
+	}
+	
+	// 현재 로그인한 사용자 정보
+	@GetMapping("/me")
+	public ResponseEntity<?> me(Authentication auth) {
+		if(auth == null) {
+			return ResponseEntity.status(401).body(Map.of("error", "로그인이 필요합니다")); 
+		}
+		return ResponseEntity.ok(Map.of("username", auth.getName()));
 	}
 
 }
