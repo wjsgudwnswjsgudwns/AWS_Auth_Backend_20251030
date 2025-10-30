@@ -15,6 +15,8 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import com.jhj.home.repository.UserRepository;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 public class SecurityConfig {
 
@@ -47,6 +49,7 @@ public class SecurityConfig {
 					.formLogin(form -> form
 							.loginProcessingUrl("/api/auth/login") //로그인을 처리하는 요청
 							.defaultSuccessUrl("/api/auth/apicheck", true) //로그인 성공 시 이동할 url
+							.failureHandler((req, res, ex) -> res.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
 							.permitAll()
 							)
 					//로그아웃 처리 파트 설정
